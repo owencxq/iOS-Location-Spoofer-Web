@@ -815,14 +815,27 @@
       $done({});
     }
 
-    function completeResponse(bodyBytes, wifiCount, cellCount) {
-      var headers = ($response && $response.headers) ? $response.headers : {};
-      delete headers["Content-Encoding"];
-      delete headers["content-encoding"];
-      headers["Content-Length"] = String(bodyBytes.length);
-      headers["X-Location-Spoofer"] = "active";
-      headers["X-Location-Spoofer-Wifi"] = String(wifiCount);
-      headers["X-Location-Spoofer-Cell"] = String(cellCount);
+  function completeResponse(bodyBytes, wifiCount, cellCount) {
+    var headers = ($response && $response.headers) ? $response.headers : {};
+  
+    delete headers["Content-Encoding"];
+    delete headers["content-encoding"];
+    delete headers["Transfer-Encoding"];
+    delete headers["transfer-encoding"];
+    delete headers["Content-Length"];
+    delete headers["content-length"];
+  
+    headers["Content-Type"] = "application/octet-stream";
+    headers["Content-Length"] = String(bodyBytes.length);
+    headers["X-Location-Spoofer"] = "active";
+    headers["X-Location-Spoofer-Wifi"] = String(wifiCount);
+    headers["X-Location-Spoofer-Cell"] = String(cellCount);
+
+  $done({
+    headers: headers,
+    body: bodyBytes
+  });
+}
 
       $done({
         response: {
